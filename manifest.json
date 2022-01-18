@@ -1,0 +1,12 @@
+{
+    "manifests": {
+        "xip-solid-foundation/pre-commit": {
+            "manifest": {
+                "copy-from-recipe": {
+                    "bin/": "%BIN_DIR%"
+                }
+            },
+            "ref": "18376cc6643eef88c410a5a97617044b470dd2c8"
+        }
+    }
+}
