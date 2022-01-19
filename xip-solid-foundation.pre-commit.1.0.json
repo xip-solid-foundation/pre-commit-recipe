@@ -1,0 +1,20 @@
+{
+    "manifests": {
+        "xip-solid-foundation/pre-commit": {
+            "manifest": {
+                "copy-from-package": {
+                    "bin/pre-commit": "%BIN_DIR%/pre-commit"
+                }
+            },
+            "files": {
+                "bin/pre-commit": {
+                    "contents": [
+                        "#!/usr/bin/env bash\n# Automatic usage by installing symbolic link:\n# ln -sf ../../bin/pre-commit .git/hooks/pre-commit\n\n# Enable TTY, so fastest runs on a single line and looks cooler\nexec < /dev/tty\n\nif [[ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q apache2)` ]]; then\n    echo -e \"\\e[41m COMMIT FAILED: Docker-compose is not running! \\e[0m\";\n    exit 1\nfi\n\n# Install phpunit synchronously to avoid problems.\ndocker-compose exec php bin/phpunit install\n\ndocker-compose exec -T php bin/console cache:warmup --env=prod\nif [[ $? != \"0\" ]]\nthen\n    echo -e \"\\e[41m COMMIT FAILED: Cannot warm cache for env=prod! \\e[0m\":\n    exit 1\nfi\n\n# see which files you wanted to commit, fix code style and re-add\nFILES=` git status --porcelain | grep -e '^[AM]\\(.*\\).php$' | cut -c 3- | tr '\\n' ' '`\nif [[ $FILES ]]\nthen\n    FILES_NO_APPLICATION=`echo ${FILES} | sed \"s/api\\///g\"`\n    docker-compose exec -T php vendor/bin/php-cs-fixer fix\n    git add ${FILES}\nfi\n\n# remove outdated code coverage files\nrm -rf var/coverage.txt public/test.html\n\n# warmup test cache to speed up tests\ndocker-compose exec php bin/console cache:warmup --env=test\n\n# Run Tests and generate code coverage\ndocker-compose exec php bash -c \"XDEBUG_MODE=coverage vendor/bin/paratest --coverage-html=public/test.html --coverage-text=var/coverage.txt tests\"\nif [[ $? != \"0\" ]]\nthen\n    echo -e \"\\e[41m COMMIT FAILED: You have test errors! \\e[0m\":\n    exit 1\nfi\n\n# merge code coverage\necho \"Full HTML coverage at http://0.0.0.0/test.html/index.html\"\n\nOK=`docker-compose exec -T php head -n10 var/coverage.txt | grep Lines | grep \"100.00%\"`\nif [[ ${OK} = \"\" ]]\nthen\n    echo -e \"\\e[41m COMMIT FAILED: Code coverage not 100%! \\e[0m\":\n    exit 1\nfi\n\necho \"\"\n"
+                    ],
+                    "executable": false
+                }
+            },
+            "ref": "18376cc6643eef88c410a5a97617044b470dd2c8"
+        }
+    }
+}
