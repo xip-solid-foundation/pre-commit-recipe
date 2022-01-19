@@ -9,6 +9,6 @@
     "_links": {
         "repository": "github.com/xip-solid-foundation/pre-commit-recipe",
         "origin_template": "{package}:{version}@github.com/xip-solid-foundation/pre-commit-recipe:main",
-        "recipe_template": "https://api.github.com/repos/xip-solid-foundation/pre-commit-recipe/contents/{package_dotted}.{version}"
+        "recipe_template": "https://api.github.com/repos/xip-solid-foundation/pre-commit-recipe/contents/{package_dotted}.{version}.json"
     }
 }
