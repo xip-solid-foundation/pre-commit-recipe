@@ -1,14 +1,14 @@
 {
     "recipes": {
         "xip-solid-foundation/pre-commit": [
-            "v1.0.1"
+            "v1.0"
         ]
     },
     "branch": "main",
     "is_contrib": true,
     "_links": {
-        "repository": "github.com/xip-solid-foundation/pre-commit",
-        "origin_template": "{package}:{version}@github.com/xip-solid-foundation/pre-commit:main",
-        "recipe_template": "https://api.github.com/repos/xip-solid-foundation/pre-commit/contents/{package_dotted}.{version}.json"
+        "repository": "github.com/xip-solid-foundation/pre-commit-recipe",
+        "origin_template": "{package}:{version}@github.com/xip-solid-foundation/pre-commit-recipe:main",
+        "recipe_template": "https://api.github.com/repos/xip-solid-foundation/pre-commit-recipe/contents/xip-solid-foundation.pre-commit-recipe.1.0.json"
     }
 }
